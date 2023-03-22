@@ -1,0 +1,317 @@
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+<script>
+
+  window.addEventListener("load", buscarDatos);
+  document.getElementById("input-search").addEventListener("input", onInputChange)
+  
+  function validarFormulario(){
+    loadingOnOff();
+    const form = document.getElementById('crearUsuario');
+    const id = form.usuarioId.value;
+    console.log(id);
+    if( id === ''){
+      // Create
+      google.script.run
+      .withSuccessHandler( result =>{
+        loadingOnOff();
+        const tableBody = document.getElementById('tableBody-usuarios');
+        tableBody.innerHTML = '';
+        buscarDatos();
+        form.reset();
+        const crearModal = bootstrap.Modal.getOrCreateInstance('#createModal');
+        crearModal.hide();
+      })
+      .agregarUsuario(form);
+    }else{
+      // Update
+      google.script.run
+      .withSuccessHandler( result =>{
+        loadingOnOff();
+        const tableBody = document.getElementById('tableBody-usuarios');
+        tableBody.innerHTML = '';
+        buscarDatos();
+        form.reset();
+        const crearModal = bootstrap.Modal.getOrCreateInstance('#createModal');
+        crearModal.hide();
+      })
+      .editarUsuario(form);
+    }
+
+  }
+
+  function buscarDatos(){
+    google.script.run
+    .withSuccessHandler(dataUsuarios=>{
+      let tableBody = document.getElementById("tableBody-usuarios");
+      var template = document.getElementById("rowTemplate");
+      var templateContent = template.content;
+
+      dataUsuarios.forEach( usuario =>{
+        const tr = templateContent.cloneNode(true);
+
+        const usuarioIdCol = tr.querySelector(".template-usuarioId");
+        const organizacionCol = tr.querySelector(".template-organizacion");
+        const equipoCol = tr.querySelector(".template-equipo");
+        const sectorCol = tr.querySelector(".template-sector");
+        const orientacion1Col = tr.querySelector(".template-orientacion1");
+        const orientacion2Col = tr.querySelector(".template-orientacion2");
+        const cantEstudiantesCol = tr.querySelector(".template-cantEstudiantes");
+        const diasCol = tr.querySelector(".template-dias");
+        const hsAcapCol = tr.querySelector(".template-hsAcap");
+        const estudiantesCol = tr.querySelector(".template-estudiantes");
+        const turnosCol = tr.querySelector(".template-turnos");
+        const fechaCol = tr.querySelector(".template-fecha");
+        const horarioCol = tr.querySelector(".template-horario");
+        const lanzamientoCol = tr.querySelector(".template-lanzamiento");
+        const acuerdoCol = tr.querySelector(".template-acuerdo");
+        const linkPpCol = tr.querySelector(".template-linkPp");
+        const linkApCol = tr.querySelector(".template-linkAp");
+        const plataformaCol = tr.querySelector(".template-plataforma");
+        const acuerdoFechaCol = tr.querySelector(".template-acuerdoFecha");
+        const recepcionFechaCol = tr.querySelector(".template-recepcionFecha");
+        const acuerdoFirmaCol = tr.querySelector(".template-acuerdoFirma");
+        const nombreReferenteCol = tr.querySelector(".template-nombreReferente");
+        const cargoReferenteCol = tr.querySelector(".template-cargoReferente");
+        const telReferenteCol = tr.querySelector(".template-telReferente");
+        const mailReferenteCol = tr.querySelector(".template-mailReferente");
+        const escuelaCol = tr.querySelector(".template-escuela");
+        const cerradoCol = tr.querySelector(".template-cerrado");
+        
+
+             
+        const accionesCol = tr.querySelector(".template-acciones");
+        const editButton = tr.querySelector(".button-edit");
+        const deleteButton = tr.querySelector(".button-delete");
+
+        usuarioIdCol.textContent = usuario[0];
+        organizacionCol.textContent = usuario[1];
+        equipoCol.textContent = usuario[2];
+        sectorCol.textContent = usuario[3];
+        orientacion1Col.textContent = usuario[4];
+        orientacion2Col.textContent = usuario[5];
+        cantEstudiantesCol.textContent = usuario[6];
+        diasCol.textContent = usuario[7];
+        hsAcapCol.textContent = usuario[8];
+        estudiantesCol.textContent = usuario[9];
+        turnosCol.textContent = usuario[10];
+        fechaCol.textContent = usuario[11];
+        horarioCol.textContent = usuario[12];
+        lanzamientoCol.textContent = usuario[13];
+        acuerdoCol.textContent = usuario[14];
+        
+        if (usuario[15]) {
+          linkPpCol.textContent = "Link";
+        }
+        linkPpCol.setAttribute("href", usuario[15]);
+
+        if (usuario[16]) {
+          linkApCol.textContent = "Link";
+        }
+        linkApCol.setAttribute("href", usuario[16]);
+        plataformaCol.textContent = usuario[17];
+        acuerdoFechaCol.textContent = usuario[18];
+        recepcionFechaCol.textContent = usuario[19];
+        acuerdoFirmaCol.textContent = usuario[20];
+        nombreReferenteCol.textContent = usuario[21];
+        cargoReferenteCol.textContent = usuario[22];
+        telReferenteCol.textContent = usuario[23];
+        mailReferenteCol.textContent = usuario[24];
+        mailReferenteCol.setAttribute("href", "mailto:" + usuario[24]);
+        mailReferenteCol.textContent = usuario[24];
+        escuelaCol.textContent = usuario[25];
+        cerradoCol.textContent = usuario[26];
+        
+        
+        editButton.dataset.usuarioId = usuario[0];
+        deleteButton.dataset.usuarioId = usuario[0];
+
+        tableBody.appendChild(tr);
+      })
+    })
+    .readUsers();
+  }
+
+  function editarUsuarioModal(button){
+
+    const tableRow = button.parentNode.parentNode;
+    console.log(tableRow); 
+    const id = button.dataset.usuarioId;
+    const organizacion = tableRow.cells[1].innerHTML;
+    const equipo = tableRow.cells[2].innerHTML;
+    const sector = tableRow.cells[3].innerHTML;
+    const orientacion1 = tableRow.cells[4].innerHTML;
+    const orientacion2 = tableRow.cells[5].innerHTML;
+    const cantEstudiantes = tableRow.cells[6].innerHTML;
+    const dias = tableRow.cells[7].innerHTML;
+    const hsAcap = tableRow.cells[8].innerHTML;
+    const estudiantes = tableRow.cells[9].innerHTML;
+    const turnos = tableRow.cells[10].innerHTML;
+    const fecha = tableRow.cells[11].innerHTML;
+    const horario = tableRow.cells[12].innerHTML;
+    const lanzamiento = tableRow.cells[13].innerHTML;
+    const acuerdo = tableRow.cells[14].innerHTML;
+    
+
+
+const linkPpElem = tableRow.cells[15].querySelector('a.template-linkPp');
+let linkPp = '';
+if (linkPpElem && linkPpElem.hasAttribute('href') && linkPpElem.getAttribute('href') !== '') {
+  linkPp = linkPpElem.href;
+}
+
+
+
+
+const linkApElem = tableRow.cells[16].querySelector('a.template-linkAp');
+let linkAp = '';
+if (linkApElem && linkApElem.hasAttribute('href') && linkApElem.getAttribute('href') !== '') {
+  linkAp = linkApElem.href;
+}
+
+    const plataforma = tableRow.cells[17].innerHTML;
+    const acuerdoFecha = tableRow.cells[18].innerHTML;
+    const recepcionFecha = tableRow.cells[19].innerHTML;
+    const acuerdoFirma = tableRow.cells[20].innerHTML;
+    const nombreReferente = tableRow.cells[21].innerHTML;
+    const cargoReferente = tableRow.cells[22].innerHTML;
+    const telReferente = tableRow.cells[23].innerHTML;
+    const mailReferente = tableRow.cells[24].querySelector('a').href.replace('mailto:', '');
+    const escuela = tableRow.cells[25].innerHTML;
+    const cerrado = tableRow.cells[26].innerHTML;
+
+
+    const crearModal = bootstrap.Modal.getOrCreateInstance('#createModal')
+    crearModal.show();
+
+    
+    document.getElementById("organizacion").value = organizacion;
+    document.getElementById("equipo").value = equipo;
+    document.getElementById("sector").value = sector;
+    document.getElementById("orientacion1").value = orientacion1;
+    document.getElementById("orientacion2").value = orientacion2;
+    document.getElementById("cantEstudiantes").value = cantEstudiantes;
+    document.getElementById("dias").value = dias;
+    document.getElementById("hsAcap").value = hsAcap;
+    document.getElementById("estudiantes").value = estudiantes;
+    document.getElementById("turnos").value = turnos;
+    document.getElementById("fecha").value = fecha;
+    document.getElementById("horario").value = horario;
+    document.getElementById("lanzamiento").value = lanzamiento;
+    document.getElementById("acuerdo").value = acuerdo;
+    document.getElementById("linkPp").value = linkPp;
+    document.getElementById("linkAp").value = linkAp;
+    document.getElementById("plataforma").value = plataforma;
+    document.getElementById("acuerdoFecha").value = acuerdoFecha;
+    document.getElementById("recepcionFecha").value = recepcionFecha;
+    document.getElementById("acuerdoFirma").value = acuerdoFirma;
+    document.getElementById("nombreReferente").value = nombreReferente;
+    document.getElementById("cargoReferente").value = cargoReferente;
+    document.getElementById("telReferente").value = telReferente;
+    document.getElementById("mailReferente").value = mailReferente;
+    document.getElementById("escuela").value = escuela;
+    document.getElementById("cerrado").value = cerrado;
+    
+    document.getElementById("usuarioId").value = id;
+
+  }
+
+
+  function borrarUsuarioModal(button){
+    const id = button.dataset.usuarioId;
+    /* console.log(id); */
+    const borrarButton = document.getElementById('borrarUsuario');
+    borrarButton.dataset.usuarioId = id;
+    const borrarModal = bootstrap.Modal.getOrCreateInstance('#borrarModal');
+    borrarModal.show();
+  }
+
+  function clearForm(){
+    const form = document.getElementById('crearUsuario');
+    form.reset();
+    const dataAttributeId = document.getElementById('guardarUsuario');
+    dataAttributeId.removeAttribute('data-id');
+  }
+
+  function validarBorrado(button){
+    /* console.log(button); */
+    const id = button.dataset.usuarioId;
+
+    google.script.run
+    .withSuccessHandler(result=>{
+      const tableBody = document.getElementById('tableBody-usuarios');
+      tableBody.innerHTML = '';
+      buscarDatos();
+      const dataAttributeId = document.getElementById('borrarUsuario');
+      dataAttributeId.removeAttribute('data-usuario-id');
+      const borrarModal = bootstrap.Modal.getOrCreateInstance('#borrarModal');
+      borrarModal.hide();
+    })
+    .borrarUsuario(id);
+  }
+
+  function loadingOnOff(){
+    document.querySelector('#guardarUsuario').classList.toggle("d-none");
+    document.querySelector('#loadingButton').classList.toggle("d-none");
+  }
+
+
+
+function onInputChange(){
+  let inputText = document.getElementById("input-search").value.toString().toLowerCase();
+  /* console.log(inputText); */
+
+  let tableBody = document.getElementById("tableBody-usuarios");
+  let tableRows = tableBody.getElementsByTagName("tr");
+   /*console.log(tableRows); */
+
+   for(let i = 0; i < tableRows.length; i++){
+     /*console.log(tableRows[i].cells[1].textContent);*/
+     let textoConsulta = tableRows[i].cells[1].textContent.toString().toLowerCase();
+     if (textoConsulta.indexOf(inputText) === -1){
+       tableRows[i].style.visibility = "collapse";
+
+     }else{
+       tableRows[i].style.visibility = "";
+
+     }
+   }
+
+}
+
+
+
+</script>
+<script>
+  document.getElementById('cerrado').onchange = function() {
+    if (this.value == '5. Cerrado con equipo pedagógico') {
+      alert('⚠ Recuerde que para cerrar con equipo pedagógico, es necesario:⚠\n\ni) tener fecha de inicio\nii) estar cargado el enlace al tablero de trabajo de la PP (completo)\niii) estar cargado el enlace al Acta pedagógica (y ser enviada)\niv) consignar al acap en estado de categoría 5: cerrado con equipo pedagógico');
+    }
+  };
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

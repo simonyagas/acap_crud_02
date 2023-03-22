@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <?!= include('CSS') ?>
+    
+  </head>
+  <body>
+    <main class="container-fluid">
+      <h1 class="mb-5">ACAP</h1>
+      <div class="d-flex justify-content-between mb-3">
+        <div class="col">
+          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal"><i class="bi bi-plus"></i> Agregar</button>
+        </div>
+        <div class="col-3">
+          <input type="text" class="form-control" id="input-search" placeholder="Filtrar por organizacion...">
+        </div>
+      </div>
+
+      <table class="table table-hover table-striped table-sm">
+        <thead class="thead-light">
+          <tr>
+            <th>Id ACAP</th>
+            <th>Organización y Área</th>
+            <th>Encargado equipo ACAP</th>
+            <th>Sector</th>
+            <th>Orientación Principal</th>
+            <th>Orientación Potencial</th>
+            <th>Cantidad Estudiantes Totales</th>
+            <th>Días por semana que asiste un estudiante</th>
+            <th>Cantidad Hs Acap por estudiante</th>
+            <th>Cantidad de estudiantes en simultáneo</th>
+            <th>Turnos a realizar la ACAP</th>
+            <th>Fecha Inicio</th>
+            <th>Horario en que concurren</th>
+            <th>Lanzamiento</th>
+            <th>Acuerdo Marco firmado</th>
+            <th>Link a la propuesta pedagogica</th>
+            <th>Link Acta Pedagogica</th>
+            <th>Cargada en plataforma</th>
+            <th>Acuerdo enviado a la organización para firma digital (consignar fecha)</th>
+            <th>Recepción de acuerdo firmado (consignar fecha)</th>
+            <th>Acuerdo enviado a firmar a las áreas (consignar fecha)</th>
+            <th>Nombre referente</th>
+            <th>Cargo referente</th>
+            <th>Telefono Referente</th>
+            <th>Mail referente</th>
+            <th>Escuela</th>
+            <th>Cerrado</th>
+            <th>Acciones</th>
+            
+          </tr>
+        </thead>
+        <tbody id="tableBody-usuarios">
+
+        </tbody>
+      </table>
+
+    </main>
+
+    <template id="rowTemplate">
+      <tr>
+        <td class="template-usuarioId"></td>
+        <td class="template-organizacion"></td>
+        <td class="template-equipo"></td>
+        <td class="template-sector"></td>
+        <td class="template-orientacion1"></td>
+        <td class="template-orientacion2"></td>
+        <td class="template-cantEstudiantes"></td>
+        <td class="template-dias"></td>
+        <td class="template-hsAcap"></td>
+        <td class="template-estudiantes"></td>
+        <td class="template-turnos"></td>
+        <td class="template-fecha"></td>
+        <td class="template-horario"></td>
+        <td class="template-lanzamiento"></td>
+        <td class="template-acuerdo"></td>
+        <td><a class="template-linkPp" target=”_blank”></a></td>
+        <td><a class="template-linkAp" target=”_blank”></a></td>
+        <td class="template-plataforma"></td>
+        <td class="template-acuerdoFecha"></td>
+        <td class="template-recepcionFecha"></td>
+        <td class="template-acuerdoFirma"></td>
+        <td class="template-nombreReferente"></td>
+        <td class="template-cargoReferente"></td>
+        <td class="template-telReferente"></td>
+        <td><a class="template-mailReferente" target=”_blank”></a></td>
+        <td class="template-escuela"></td>
+        <td class="template-cerrado"></td>
+        
+        <td class="template-acciones text-center"><i class="bi bi-pencil-square button-edit me-3" role="button" onclick="editarUsuarioModal(this)"></i><i class="bi bi-trash button-delete" role="button" onclick="borrarUsuarioModal(this)"></i></td>
+
+      </tr>
+    </template>
+
+    <!-- Modal Create-->
+    <div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="createModalLabel">Crear usuario</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form name="crearUsuario" id="crearUsuario">
+              <div class="row mb-3">
+                <div class="mb-3">
+                  <input type ="text" class="form-control-plaintext" placeholder="#" aria-label="usuarioId" name="usuarioId" id="usuarioId" readonly >
+                </div>
+              </div>
+
+
+<div class="form-group row">
+  <label class="col-sm-6 col-form-label">Organización</label>
+  <div class="col-sm-6">
+  <select id="organizacion" name="organizacion" placeholder="Organización" style="max-width: 80%;">
+    <option disabled selected></option>
+    <? for(const organizacion of organizaciones) {?>
+    <option><?= organizacion ?></option>
+    <? }?>
+  </select>
+  </div>
+</div>
+
+
+<div class="form-group row">
+  <label class="col-sm-6 col-form-label">Encargado equipo ACAP</label>
+  <div class="col-sm-6">
+  <select id="equipo" name="equipo" placeholder="equipo" style="max-width: 100%;">
+    <option disabled selected></option>
+    <? for(const equipo of equipos) {?>
+    <option><?= equipo ?></option>
+    <? }?>
+  </select>
+  </div>
+</div>
+
+<div class="form-group row">
+    <label class="col-sm-6 col-form-label">Sector</label>
+    <div class="col-sm-6">
+    <select id="sector" name="sector" placeholder="sector" style="max-width: 100%;">
+      <option disabled selected></option>
+      <? for(const sector of sectores) {?>
+      <option><?= sector ?></option>
+      <? }?>
+    </select>
+    </div>
+</div>
+
+<div class="form-group row">
+  <label class="col-sm-6 col-form-label">Orientacion Principal</label>
+  <div class="col-sm-6">
+  <select id="orientacion1" name="orientacion1" placeholder="Orientacion Principal" style="max-width: 100%;">
+    <option disabled selected></option>
+    <? for(const orientacion of orientaciones) {?>
+    <option><?= orientacion ?></option>
+    <? }?>
+  </select>
+</div>
+</div>
+
+<div class="form-group row">
+  <label class="col-sm-6 col-form-label">Orientación Potencial</label>
+  <div class="col-sm-6">
+  <select id="orientacion2" name="orientacion2" placeholder="Orientación Potencial" style="max-width: 100%;">
+    <option disabled selected></option>
+    <? for(const orientacion of orientaciones) {?>
+    <option><?= orientacion ?></option>
+    <? }?>
+  </select>
+  </div>
+</div>
+
+<div class="form-group row">
+  <label class="col-sm-6 col-form-label" for="cantEstudiantes">Cantidad Estudiantes</label>
+  <div class="col-sm-6">
+    <input type="text" class="form-control form-control-sm" id="cantEstudiantes" name="cantEstudiantes" placeholder="Cantidad Estudiantes">
+</div>
+</div>
+
+<div class="form-group row">
+  <label class="col-sm-6 col-form-label" for="dias">Días por semana que asiste un estudiante</label>
+  <div class="col-sm-6">
+    <input type="text" class="form-control form-control-sm" id="dias" name="dias" placeholder="Días por semana que asiste un estudiante">
+</div>
+</div>
+
+<div class="form-group row">
+  <label class="col-sm-6 col-form-label" for="hsAcap">Cantidad Hs Acap por estudiante</label>
+  <div class="col-sm-6">
+    <input type="text" class="form-control form-control-sm" id="hsAcap" name="hsAcap" placeholder="Cantidad Hs Acap por estudiante">
+</div>
+</div>
+
+<div class="form-group row">
+  <label class="col-sm-6 col-form-label" for="estudiantes">Cantidad de estudiantes en simultáneo</label>
+  <div class="col-sm-6">
+    <input type="text" class="form-control form-control-sm" id="estudiantes" name="estudiantes" placeholder="Cantidad de estudiantes en simultáneo">
+</div>
+</div>
+
+<div class="form-group row">
+  <label class="col-sm-6 col-form-label">Turnos a realizar la ACAP</label>
+  <div class="col-sm-6">
+  <select id="turnos" name="turnos" placeholder="turnos" style="max-width: 100%;">
+    <option disabled selected></option>
+    <option>Turno Mañana</option>
+    <option>Turno Tarde</option>
+    <option>Turno Vespertino</option>
+    <option>Turno Mixto - Arte</option>
+  </select>
+  </div>
+</div>
+
+<div class="form-group row">
+  <label class="col-sm-6 col-form-label" for="fecha">Fecha Inicio</label>
+  <div class="col-sm-6">
+    <input type="date" class="form-control form-control-sm" id="fecha" name="fecha" placeholder="Fecha Inicio">
+</div>
+</div>
+
+<div class="form-group row">
+  <label class="col-sm-6 col-form-label" for="horario">Horario en que concurren</label>
+  <div class="col-sm-6">
+    <input type="text" class="form-control form-control-sm" id="horario" name="horario" placeholder="Horario en que concurren">
+</div>
+</div>
+
+<div class="form-group row">
+  <label class="col-sm-6 col-form-label">Lanzamiento</label>
+  <div class="col-sm-6">
+  <select id="lanzamiento" name="lanzamiento" placeholder="lanzamiento" style="max-width: 100%;">
+    <option disabled selected></option>
+    <option>Enero</option>
+    <option>Febrero</option>
+    <option>Marzo</option>
+    <option>Abril</option>
+    <option>Mayo</option>
+    <option>Junio</option>
+    <option>Julio</option>
+    <option>Agosto</option>
+    <option>Septiembre</option>
+    <option>Octubre</option>
+    <option>Noviembre</option>
+    <option>Diciembre</option>
+  </select>
+  </div>
+</div>
+
+<div class="form-group row">
+  <label class="col-sm-6 col-form-label" for="acuerdo">Acuerdo Marco firmado</label>
+  <div class="col-sm-6">
+    <input type="text" class="form-control form-control-sm" id="acuerdo" name="acuerdo" placeholder="Acuerdo Marco firmado">
+</div>
+</div>
+
+<div class="form-group row">
+  <label class="col-sm-6 col-form-label" for="linkPp">Link a la propuesta pedagogica</label>
+  <div class="col-sm-6">
+    <input type="text" class="form-control form-control-sm" id="linkPp" name="linkPp" placeholder="Link a la propuesta pedagogica">
+</div>
+</div>
+
+<div class="form-group row">
+  <label class="col-sm-6 col-form-label" for="linkAp">Link Acta Pedagogica</label>
+  <div class="col-sm-6">
+    <input type="text" class="form-control form-control-sm" id="linkAp" name="linkAp" placeholder="Link Acta Pedagogica">
+</div>
+</div>
+
+
+<div class="form-group row">
+  <label class="col-sm-6 col-form-label">Cargada en plataforma</label>
+  <div class="col-sm-6">
+  <select id="plataforma" name="plataforma" placeholder="plataforma" style="max-width: 100%;">
+    <option disabled selected></option>
+    <option>Si</option>
+    <option>No</option>
+  </select>
+  </div>
+</div>
+
+<div class="form-group row">
+  <label class="col-sm-6 col-form-label">Estado pedagogico</label>
+  <div class="col-sm-6">
+  <select id="cerrado" name="cerrado" placeholder="Cerrado para escuela" style="max-width: 100%;">
+    <option disabled selected></option>
+    <? for(const estado of estados) {?>
+    <option><?= estado ?></option>
+    <? }?>
+  </select>
+</div>
+</div>
+
+<div class="form-group row">
+  <label class="col-sm-6 col-form-label" for="linkEscuela">Cerrado para escuela</label>
+  <div class="col-sm-6">
+    <input type="text" class="form-control form-control-sm" id="escuela" name="escuela" placeholder="Cerrado para escuela">
+</div>
+</div>
+
+
+
+<h3>Guada</h3>
+
+<div class="form-group row">
+  <label class="col-sm-6 col-form-label" for="acuerdoFecha">Acuerdo enviado a la organización para firma digital (consignar fecha)</label>
+  <div class="col-sm-6">
+    <input type="text" class="form-control form-control-sm" id="acuerdoFecha" name="acuerdoFecha" placeholder="Acuerdo enviado a la organización para firma digital (consignar fecha)">
+</div>
+</div>
+
+<div class="form-group row">
+  <label class="col-sm-6 col-form-label" for="recepcionFecha">Recepción de acuerdo firmado (consignar fecha)</label>
+  <div class="col-sm-6">
+    <input type="text" class="form-control form-control-sm" id="recepcionFecha" name="recepcionFecha" placeholder="Recepción de acuerdo firmado (consignar fecha)">
+</div>
+</div>
+
+<div class="form-group row">
+  <label class="col-sm-6 col-form-label" for="acuerdoFirma">Acuerdo enviado a firmar a las áreas (consignar fecha)</label>
+  <div class="col-sm-6">
+    <input type="text" class="form-control form-control-sm" id="acuerdoFirma" name="acuerdoFirma" placeholder="Acuerdo enviado a firmar a las áreas (consignar fecha)">
+</div>
+</div>
+
+<h3>Datos del referente</h3>
+
+<div class="form-group row">
+  <label class="col-sm-6 col-form-label" for="nombreReferente">Nombre referente</label>
+  <div class="col-sm-6">
+    <input type="text" class="form-control form-control-sm" id="nombreReferente" name="nombreReferente" placeholder="Nombre referente">
+</div>
+</div>
+
+<div class="form-group row">
+  <label class="col-sm-6 col-form-label" for="cargoReferente">Cargo referente</label>
+  <div class="col-sm-6">
+    <input type="text" class="form-control form-control-sm" id="cargoReferente" name="cargoReferente" placeholder="Cargo referente">
+</div>
+</div>
+
+<div class="form-group row">
+  <label class="col-sm-6 col-form-label" for="telReferente">Telefono Referente</label>
+  <div class="col-sm-6">
+    <input type="text" class="form-control form-control-sm" id="telReferente" name="telReferente" placeholder="Telefono Referente">
+</div>
+</div>
+
+<div class="form-group row">
+  <label class="col-sm-6 col-form-label" for="mailReferente">Mail referente</label>
+  <div class="col-sm-6">
+    <input type="text" class="form-control form-control-sm" id="mailReferente" name="mailReferente" placeholder="Mail referente">
+</div>
+</div>
+
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="clearForm()">Cerrar</button>
+            <button type="button" class="btn btn-primary" onclick="validarFormulario()" id="guardarUsuario">Guardar</button>
+            <button class="btn btn-primary d-none btnLoading" type="button" disabled id="loadingButton">
+              <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+              Loading...
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Delete-->
+    <div class="modal fade" id="borrarModal" tabindex="-1" aria-labelledby="borrarModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="borrarModalLabel">Eliminar registro</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <p>¿Seguro que quieres eliminar este registro?</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="clearForm()">Cerrar</button>
+            <button type="button" class="btn btn-danger" onclick="validarBorrado(this)" id="borrarUsuario">Borrar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <?!= include('JS') ?>
+  </body>
+</html>
